@@ -3,67 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<script>
-// ── Redirection mobile intelligente ──
-// 1ère visite : landing + bouton sticky "Entrer dans l'app" (clic obligatoire)
-// Visites suivantes : redirect immédiat
-// Desktop : jamais de redirect
-(function(){
-  try {
-    if(location.hostname !== 'voltclip.github.io') return;
-    if(new URLSearchParams(location.search).has('lp')) return;
-    var ua = navigator.userAgent || '';
-    var isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini|BlackBerry|webOS/i.test(ua)
-                   || screen.width <= 768;
-    // Déjà vue → redirect immédiat
-    if(localStorage.getItem('vc_landing_seen')) {
-      location.replace('https://voltclip.github.io/Voltclip-/voltclip.html');
-      return;
-    }
-    // 1ère visite → marquer + bouton sticky, pas de countdown
-    localStorage.setItem('vc_landing_seen', '1');
-    document.addEventListener('DOMContentLoaded', function(){
-      var bar = document.createElement('div');
-      bar.innerHTML =
-        '<a href="https://voltclip.github.io/Voltclip-/voltclip.html" id="vc-enter-btn">⚡ Entrer dans l\'app →</a>';
-      bar.style.cssText = [
-        'position:fixed','bottom:0','left:0','right:0','z-index:9999',
-        'display:flex','align-items:center','justify-content:center',
-        'padding:16px 20px 28px',
-        'background:linear-gradient(to top,#0a0a0f 60%,transparent)',
-        'pointer-events:none'
-      ].join(';');
-      var btn = bar.querySelector('#vc-enter-btn');
-      btn.style.cssText = [
-        'pointer-events:all',
-        'display:inline-flex','align-items:center','gap:10px',
-        'background:linear-gradient(135deg,#7c5cfc,#fc5c7d)',
-        'color:#fff','padding:16px 36px','border-radius:40px',
-        'text-decoration:none','font-family:\'Space Mono\',monospace',
-        'font-size:14px','font-weight:700','letter-spacing:.04em',
-        'box-shadow:0 6px 32px rgba(124,92,252,.55)',
-        'width:100%','max-width:340px','justify-content:center'
-      ].join(';');
-      document.body.appendChild(bar);
-
-      // Repositionne la barre au-dessus du banner cookies s'il est visible
-      function _adjustBar(){
-        var banner = document.getElementById('vcCookieBanner');
-        if(banner && banner.style.display !== 'none'){
-          bar.style.bottom = banner.offsetHeight + 'px';
-        } else {
-          bar.style.bottom = '0';
-        }
-      }
-      _adjustBar();
-      // Observe les changements d'affichage du banner cookies
-      var _mo = new MutationObserver(_adjustBar);
-      var _cb = document.getElementById('vcCookieBanner');
-      if(_cb) _mo.observe(_cb, { attributes: true, attributeFilter: ['style'] });
-    });
-  } catch(e){}
-})();
-</script>
 <title>VoltClip — La plateforme de battle vidéo où les créateurs s'affrontent</title>
 <meta name="description" content="VoltClip — Publie tes clips, affronte d'autres créateurs en battle vidéo, vote pour les meilleurs talents. Danse, vocal, gaming, humour. Feed plein écran, classement mondial 2026.">
 <meta name="keywords" content="VoltClip, battle vidéo, duel créateur, vote talent, danse battle, vocal battle, gaming clips, humour, feed plein écran, classement mondial, clips courts">
@@ -86,7 +25,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
 <script>
-// AdSense — chargement conditionnel selon le consentement cookies
 (function(){
   if(localStorage.getItem('vc_cookie_consent')==='accepted'){
     var s=document.createElement('script');
@@ -354,74 +292,16 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:3px}
 </style>
-<!-- Google tag (gtag.js) — Consent Mode v2 RGPD -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3FRM3MTWHP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  // Consent Mode v2 — refus par défaut (CNIL/RGPD)
-  gtag('consent','default',{
-    'ad_storage':'denied','analytics_storage':'denied',
-    'ad_user_data':'denied','ad_personalization':'denied',
-    'wait_for_update':500
-  });
   gtag('js', new Date());
-  gtag('config', 'G-3FRM3MTWHP', {'send_page_view': false});
-  // Restaurer si déjà accepté
-  (function(){
-    if(localStorage.getItem('vc_cookie_consent')==='accepted'){
-      gtag('consent','update',{'ad_storage':'granted','analytics_storage':'granted','ad_user_data':'granted','ad_personalization':'granted'});
-      gtag('event','page_view');
-    }
-  })();
+  gtag('config', 'G-3FRM3MTWHP');
 </script>
 </head>
 <body>
-<!-- ── Bandeau consentement cookies RGPD ── -->
-<div id="vcCookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#13131a;border-top:1.5px solid rgba(124,92,252,.5);padding:16px 20px;box-shadow:0 -8px 32px rgba(0,0,0,.6)">
-  <div style="max-width:700px;margin:0 auto">
-    <div style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#fff;margin-bottom:6px">🍪 Cookies & Vie privée</div>
-    <div style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:14px">VoltClip utilise des cookies publicitaires (Google AdSense) et analytiques (Google Analytics). En cliquant sur <strong style="color:#fff">Accepter</strong>, vous consentez à leur utilisation. En cliquant sur <strong style="color:#fff">Refuser</strong>, seuls les cookies essentiels seront actifs. <a href="cookies.html" style="color:#7c5cfc;text-decoration:underline">En savoir plus</a></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button onclick="vcConsentAccept()" style="background:linear-gradient(135deg,#7c5cfc,#fc5c7d);color:#fff;border:none;border-radius:10px;padding:11px 24px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;flex:1;min-width:130px">✓ Accepter</button>
-      <button onclick="vcConsentRefuse()" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:11px 24px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;flex:1;min-width:130px">✗ Refuser</button>
-    </div>
-  </div>
-</div>
-<script>
-(function(){
-  var _k='vc_cookie_consent';
-  if(!localStorage.getItem(_k)){
-    document.addEventListener('DOMContentLoaded',function(){
-      var b=document.getElementById('vcCookieBanner');
-      if(b) b.style.display='block';
-    });
-  }
-})();
-function vcConsentAccept(){
-  localStorage.setItem('vc_cookie_consent','accepted');
-  if(typeof gtag==='function'){gtag('consent','update',{'ad_storage':'granted','analytics_storage':'granted','ad_user_data':'granted','ad_personalization':'granted'});gtag('event','page_view');}
-  // Charger AdSense si pas encore chargé
-  if(!window._vcAdSenseLoaded){
-    window._vcAdSenseLoaded=true;
-    var s=document.createElement('script');
-    s.async=true;s.crossOrigin='anonymous';
-    s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5433648295830648';
-    document.head.appendChild(s);
-    s.onload=function(){
-      try{document.querySelectorAll('.adsbygoogle').forEach(function(el){(adsbygoogle=window.adsbygoogle||[]).push({});});}catch(e){}
-    };
-  }
-  var b=document.getElementById('vcCookieBanner');
-  if(b) b.style.display='none';
-}
-function vcConsentRefuse(){
-  localStorage.setItem('vc_cookie_consent','refused');
-  var b=document.getElementById('vcCookieBanner');
-  if(b) b.style.display='none';
-}
-</script>
-
 
 <div class="glow-orb purple" aria-hidden="true"></div>
 <div class="glow-orb pink" aria-hidden="true"></div>
@@ -436,7 +316,7 @@ function vcConsentRefuse(){
     <a href="#categories">Catégories</a>
     <a href="#features">Features</a>
   </div>
-  <a href="https://voltclip.github.io/Voltclip-/voltclip.html" class="nav-cta">Entrer dans l'app ⚡</a>
+  <a href="voltclip.html" class="nav-cta">Lancer l'app ⚡</a>
 </nav>
 
 <header id="hero" role="banner">
@@ -481,8 +361,8 @@ function vcConsentRefuse(){
   </div>
 
   <div class="hero-actions">
-    <a href="https://voltclip.github.io/Voltclip-/voltclip.html" class="btn-primary">
-      ⚡ Entrer dans l'app <span class="arrow">→</span>
+    <a href="voltclip.html" class="btn-primary">
+      ⚡ Lancer VoltClip <span class="arrow">→</span>
     </a>
     <a href="#battles" class="btn-ghost">Voir les battles</a>
   </div>
@@ -497,7 +377,7 @@ function vcConsentRefuse(){
        data-ad-format="horizontal"
        data-full-width-responsive="true"></ins>
 </div>
-<script>if(localStorage.getItem('vc_cookie_consent')=='accepted'){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}</script>
+<script>try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}</script>
 
 <div class="stats-bar" role="region" aria-label="Chiffres clés">
   <div class="stat-item"><div class="stat-val purple">∞</div><div class="stat-label">Talents mondiaux</div></div>
@@ -519,7 +399,7 @@ function vcConsentRefuse(){
         <div class="perk"><div class="perk-icon purple">📊</div>Stats — vues, votes, taux de complétion</div>
         <div class="perk"><div class="perk-icon purple">💬</div>DM direct avec la communauté</div>
       </div>
-      <a href="https://voltclip.github.io/Voltclip-/voltclip.html" class="btn-primary" style="align-self:flex-start">Publier mon clip ⚡</a>
+      <a href="voltclip.html" class="btn-primary" style="align-self:flex-start">Publier mon clip ⚡</a>
     </div>
     <div class="dual-panel">
       <span class="dual-tag" style="background:rgba(46,204,113,.12);color:#2ecc71;border:1px solid rgba(46,204,113,.3)">🗳️ VOTANTS</span>
@@ -531,7 +411,7 @@ function vcConsentRefuse(){
         <div class="perk"><div class="perk-icon" style="background:rgba(46,204,113,.12)">🏅</div>Classement mondial des meilleurs votants</div>
         <div class="perk"><div class="perk-icon" style="background:rgba(46,204,113,.12)">🔥</div>Streak quotidien — médaille or/argent/bronze</div>
       </div>
-      <a href="https://voltclip.github.io/Voltclip-/voltclip.html" class="btn-ghost" style="align-self:flex-start">Voter maintenant →</a>
+      <a href="voltclip.html" class="btn-ghost" style="align-self:flex-start">Voter maintenant →</a>
     </div>
   </div>
 </div>
@@ -575,14 +455,14 @@ function vcConsentRefuse(){
   <p class="section-sub">Chaque discipline a son propre classement et ses propres battles. Ton talent a forcément sa place ici.</p>
 
   <div class="categories-grid reveal">
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">🎤</span><div class="cat-name">MUSIQUE</div><div class="cat-count">Chant · Rap · Beatbox</div></a>
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">💃</span><div class="cat-name">DANSE</div><div class="cat-count">Street · Contemporary · Waacking</div></a>
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">🎭</span><div class="cat-name">COMÉDIE</div><div class="cat-count">Stand-up · Sketch · Mime</div></a>
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">🎨</span><div class="cat-name">ART VISUEL</div><div class="cat-count">Dessin · Digital · Graffiti</div></a>
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">🤸</span><div class="cat-name">SPORT</div><div class="cat-count">Freestyle · Acrobatie · Tricks</div></a>
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">🍳</span><div class="cat-name">CUISINE</div><div class="cat-count">Recettes · Plating · Speed cook</div></a>
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">🎮</span><div class="cat-name">GAMING</div><div class="cat-count">Highlights · Speedrun · IRL</div></a>
-    <a class="cat-card" href="https://voltclip.github.io/Voltclip-/voltclip.html"><span class="cat-emoji">✨</span><div class="cat-name">AUTRE</div><div class="cat-count">Magie · Illusions · Unique</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">🎤</span><div class="cat-name">MUSIQUE</div><div class="cat-count">Chant · Rap · Beatbox</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">💃</span><div class="cat-name">DANSE</div><div class="cat-count">Street · Contemporary · Waacking</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">🎭</span><div class="cat-name">COMÉDIE</div><div class="cat-count">Stand-up · Sketch · Mime</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">🎨</span><div class="cat-name">ART VISUEL</div><div class="cat-count">Dessin · Digital · Graffiti</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">🤸</span><div class="cat-name">SPORT</div><div class="cat-count">Freestyle · Acrobatie · Tricks</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">🍳</span><div class="cat-name">CUISINE</div><div class="cat-count">Recettes · Plating · Speed cook</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">🎮</span><div class="cat-name">GAMING</div><div class="cat-count">Highlights · Speedrun · IRL</div></a>
+    <a class="cat-card" href="voltclip.html"><span class="cat-emoji">✨</span><div class="cat-name">AUTRE</div><div class="cat-count">Magie · Illusions · Unique</div></a>
   </div>
 </div>
 
@@ -679,8 +559,8 @@ function vcConsentRefuse(){
   <h2 class="cta-title">Prêt à entrer<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">dans l'arène ?</span></h2>
   <p class="cta-sub">Rejoins VoltClip gratuitement. Publie tes clips, lance des battles, vote pour les meilleurs. Fonctionne dans ton navigateur.</p>
   <div class="cta-actions">
-    <a href="https://voltclip.github.io/Voltclip-/voltclip.html" class="btn-primary" style="font-size:15px;padding:18px 38px">
-      ⚡ Entrer dans l'app <span class="arrow">→</span>
+    <a href="voltclip.html" class="btn-primary" style="font-size:15px;padding:18px 38px">
+      ⚡ Lancer VoltClip <span class="arrow">→</span>
     </a>
   </div>
 </section>
@@ -694,7 +574,7 @@ function vcConsentRefuse(){
        data-ad-format="auto"
        data-full-width-responsive="true"></ins>
 </div>
-<script>if(localStorage.getItem('vc_cookie_consent')=='accepted'){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}</script>
+<script>try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}</script>
 
 <!-- PUB ADSENSE BANNIÈRE BAS DE PAGE -->
 <div id="adBottom" style="text-align:center;padding:12px 24px;position:relative;z-index:1;max-width:1080px;margin:0 auto">
@@ -705,13 +585,13 @@ function vcConsentRefuse(){
        data-ad-format="horizontal"
        data-full-width-responsive="true"></ins>
 </div>
-<script>if(localStorage.getItem('vc_cookie_consent')=='accepted'){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}</script>
+<script>try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}</script>
 
 <footer role="contentinfo">
   <div class="footer-logo">⚡ <span>VOLT</span>CLIP</div>
   <nav aria-label="Liens footer">
     <ul class="footer-links">
-      <li><a href="https://voltclip.github.io/Voltclip-/voltclip.html">App</a></li>
+      <li><a href="voltclip.html">App</a></li>
       <li><a href="#battles">Battles</a></li>
       <li><a href="#categories">Catégories</a></li>
       <li><a href="#features">Features</a></li>
@@ -871,7 +751,7 @@ const T = {
     cta_title:'¿Listo para entrar<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">en la arena?</span>',
     cta_sub:"Únete a VoltClip gratis. Publica clips, lanza batallas, vota por los mejores. Funciona en tu navegador.",
     cta_btn:"⚡ Abrir VoltClip →",
-    footer_categories:"Categorías",footer_battles:"Batallas",footer_features:"Features",
+    footer_categories:"Categorías",footer_battles:"Batallas",footer_features:"Funciones",
   },
   pt:{
     page_title:"VoltClip — A plataforma de batalha de vídeos onde criadores se enfrentam",
@@ -918,7 +798,7 @@ const T = {
     cta_title:'Pronto para entrar<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">na arena?</span>',
     cta_sub:"Junta-te ao VoltClip gratuitamente. Publica clips, lança batalhas, vota nos melhores.",
     cta_btn:"⚡ Abrir VoltClip →",
-    footer_categories:"Categorias",footer_battles:"Batalhas",footer_features:"Features",
+    footer_categories:"Categorias",footer_battles:"Batalhas",footer_features:"Funcionalidades",
   },
   de:{
     page_title:"VoltClip — Die Video-Battle-Plattform, auf der Creators gegeneinander antreten",
@@ -965,7 +845,7 @@ const T = {
     cta_title:'Bereit, die<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Arena zu betreten?</span>',
     cta_sub:"Tritt VoltClip kostenlos bei. Poste Clips, starte Battles, stimme für die Besten.",
     cta_btn:"⚡ VoltClip starten →",
-    footer_categories:"Kategorien",footer_battles:"Battles",footer_features:"Features",
+    footer_categories:"Kategorien",footer_battles:"Battles",footer_features:"Funktionen",
   },
   it:{
     page_title:"VoltClip — La piattaforma di battle video dove i creator si sfidano",
@@ -1012,7 +892,7 @@ const T = {
     cta_title:'Pronto ad entrare<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">nell\'arena?</span>',
     cta_sub:"Unisciti a VoltClip gratuitamente. Pubblica clip, lancia battaglie, vota i migliori.",
     cta_btn:"⚡ Apri VoltClip →",
-    footer_categories:"Categorie",footer_battles:"Battaglie",footer_features:"Features",
+    footer_categories:"Categorie",footer_battles:"Battaglie",footer_features:"Funzionalità",
   },
   ar:{
     rtl:true,
@@ -1184,11 +1064,11 @@ const T = {
     cat_sport:"SPOR",cat_sport_s:"Freestyle · Akrobasi · Tricks",cat_cooking:"YEMEK",cat_cooking_s:"Tarifler · Sunum · Hızlı pişirme",
     cat_gaming:"GAMING",cat_gaming_s:"Highlights · Speedrun · IRL",cat_other:"DİĞER",cat_other_s:"Sihir · İllüzyon · Eşsiz",
     journey_label:"Yolculuk",journey_title:'Yüklemeden<br><span class="grad">zirveye</span>',
-    j1:"YÜKLEYEBİLİRSİN",j1t:"Klibini telefonundan paylaş. Kategori, başlık, hashtag seç. Saniyeler içinde yayınla.",
-    j2:"BATTLE EDEBİLİRSİN",j2t:"VoltClip seni kategorindeki başka bir yetenekle otomatik olarak eşleştirir.",
+    j1:"YÜKLE",j1t:"Klibini telefonundan paylaş. Kategori, başlık, hashtag seç. Saniyeler içinde yayınla.",
+    j2:"SAVAŞ",j2t:"VoltClip seni kategorindeki başka bir yetenekle otomatik olarak eşleştirir.",
     j3:"DÜNYA OY VERİR",j3t:"Dünyanın her yerinden binlerce izleyici favorilerine gerçek zamanlı oy verir.",
-    j4:"YÜKSELEBİLİRSİN",j4t:"Her galibiyet seni dalının dünya sıralamasında yukarı taşır.",
-    j5:"HÂKİM OLABİLİRSİN",j5t:"Galibiyetleri topla, dalının dünya sıralamasında zirveye çık. Kategorinin #1'i sensin.",
+    j4:"YÜKSELİYORSUN",j4t:"Her galibiyet seni dalının dünya sıralamasında yukarı taşır.",
+    j5:"HÂKİM OLUYORSUN",j5t:"Galibiyetleri topla, dalının dünya sıralamasında zirveye çık. Kategorinin #1'i sensin.",
     feat_section:"Platform",feat_title:'Arenaya hâkim olmak için<br><span class="grad">her şey</span>',
     f1:"ClipBattle — Battle sistemi",f1d:"Her video kategorisindeki bir battle'a otomatik olarak girer.",
     f2:"Gerçek zamanlı dünya sıralaması",f2d:"Hafta, ay, tüm zamanlar — her kategorinin kendi sıralaması var.",
@@ -1237,7 +1117,7 @@ const T = {
     j4:"JE STIJGT",j4t:"Elke overwinning brengt je hoger in de wereldranglijst van jouw discipline.",
     j5:"JE DOMINEERT",j5t:"Verzamel overwinningen, klim naar de top. De #1 van jouw categorie ben jij.",
     feat_section:"Platform",feat_title:'Alles om<br><span class="grad">de arena te domineren</span>',
-    f1:"ClipBattle — Battle systeem",f1d:"Elk video wordt automatisch in een battle in zijn categorie geplaatst.",
+    f1:"ClipBattle — Battle systeem",f1d:"Elke video wordt automatisch in een battle in zijn categorie geplaatst.",
     f2:"Wereldranglijst in real time",f2d:"Week, maand, all-time — elke categorie heeft zijn ranking.",
     f3:"Discovery-algoritme v4",f3d:"Gepersonaliseerde feed die de beste talenten op het juiste moment aan het juiste publiek toont.",
     f4:"Wereldpubliek zonder grenzen",f4d:"Een talent in Lagos kan een creator in Tokio verslaan.",
@@ -1248,7 +1128,7 @@ const T = {
     cta_title:'Klaar om de<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">arena te betreden?</span>',
     cta_sub:"Word gratis lid van VoltClip. Post clips, start battles, stem voor de besten.",
     cta_btn:"⚡ VoltClip openen →",
-    footer_categories:"Categorieën",footer_battles:"Battles",footer_features:"Features",
+    footer_categories:"Categorieën",footer_battles:"Battles",footer_features:"Functies",
   },
   ru:{
     page_title:"VoltClip — Платформа видео-баттлов, где соревнуются создатели контента",
